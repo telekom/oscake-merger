@@ -50,7 +50,7 @@ Our commitment to open source means that we are enabling -in fact encouraging- a
 
 ## Licensing
 
-Copyright (c) 2020 Deutsche Telekom AG.
+Copyright (c) 2021 Deutsche Telekom AG.
 
 Licensed under the **Apache License, Version 2.0** (the "License"); you may not use this file except in compliance with the License.
 
