@@ -6,9 +6,30 @@ val log4jCoreVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.4.10"
+    application
 }
 group = "de.oscake"
 version = "1.0-SNAPSHOT"
+
+application {
+    applicationName = "OScake-Merger"
+    mainClassName = "de.oscake.MergerMain"
+}
+
+/*val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "de.oscake.MergerMain"
+    }
+}*/
+
+tasks.named<CreateStartScripts>("startScripts") {
+    doLast {
+        // Work around the command line length limit on Windows when passing the classpath to Java, see
+        // https://github.com/gradle/gradle/issues/1989#issuecomment-395001392.
+        windowsScript.writeText(windowsScript.readText().replace(Regex("set CLASSPATH=.*"),
+            "set CLASSPATH=%APP_HOME%\\\\lib\\\\*"))
+    }
+}
 
 repositories {
     mavenCentral()

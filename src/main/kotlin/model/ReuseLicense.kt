@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 /**
  * A class representing a license item for REUSE packages.

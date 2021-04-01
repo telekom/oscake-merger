@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 /**
  * The DirLicense class wraps the information about the [license] the name of the file containing the license

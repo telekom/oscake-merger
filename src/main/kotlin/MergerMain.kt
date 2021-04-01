@@ -1,10 +1,13 @@
+package de.oscake
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.file
-import model.Project
+import de.oscake.model.Project
 import java.time.LocalDateTime
 import kotlin.system.exitProcess
+
 
 class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
     private val projects = mutableListOf<Project>()
@@ -28,20 +31,12 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
             return
         }
 
-        // merge all packages into first project
+        // merge all packages into new project
         val mergedProject = Project()
         projects.forEach {
             mergedProject.merge(it)
             mergedProject.hasIssues = mergedProject.hasIssues || it.hasIssues
         }
-
-/*        for (i in 1 until projects.size) {
-            projects[0].merge(projects[i])
-            projects[0].hasIssues = projects[0].hasIssues || projects[i].hasIssues
-        }*/
-        // temporarily set to null --> ignore this property
-        //projects[0].complianceArtifactCollection = null
-
 
         val objectMapper = ObjectMapper()
         val outputFile = outputDir.resolve("merged.oscc")

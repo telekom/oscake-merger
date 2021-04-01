@@ -1,8 +1,8 @@
+package de.oscake
+
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import model.ComplianceArtifactPackage
-import model.Project
-import model.ReuseLicense
+import de.oscake.model.Project
 import org.apache.logging.log4j.Level
 import java.io.File
 import java.io.IOException
@@ -16,6 +16,9 @@ internal class ProjectProvider private constructor(){
             try {
                 val json = File(source.absolutePath).readText()
                 project = mapper.readValue<Project>(json)
+                project.complianceArtifactPackages.forEach {
+                    it.origin = source.name
+                }
             } catch (e: IOException) {
                 Logger.log(e.stackTraceToString(), Level.ERROR)
             }

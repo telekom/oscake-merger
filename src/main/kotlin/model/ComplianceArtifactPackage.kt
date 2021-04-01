@@ -1,6 +1,8 @@
-package model
+package de.oscake.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import model.FileLicensing
 
 //@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 internal data class ComplianceArtifactPackage (
@@ -46,3 +48,9 @@ internal data class ComplianceArtifactPackage (
     val fileLicensings: MutableList<FileLicensing>
 
 )
+{
+    /**
+     * [origin] contains the name of the source file
+     */
+    @JsonIgnore lateinit var origin: String
+}

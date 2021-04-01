@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 

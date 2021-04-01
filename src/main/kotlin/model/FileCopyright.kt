@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 /**
  * The class [FileCopyright] consists only of the copyright text

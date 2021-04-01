@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 /**
  * The class DirLicensing is a collection of [DirLicense] instances for the given path (stored in [scope])

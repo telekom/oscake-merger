@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 /**
  * The class [ComplianceArtifactCollection] contains meta information about the run of the OSCakeReporter. Currently,

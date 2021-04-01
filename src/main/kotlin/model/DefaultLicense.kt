@@ -1,4 +1,4 @@
-package model
+package de.oscake.model
 
 internal data class DefaultLicense(
     /**

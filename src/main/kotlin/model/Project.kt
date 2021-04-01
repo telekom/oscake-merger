@@ -1,6 +1,7 @@
-package model
+package de.oscake.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import org.apache.logging.log4j.Level
 
 /**
  * The class [Project] wraps the meta information ([complianceArtifactCollection]) of the OSCakeReporter as well
@@ -37,75 +38,55 @@ internal data class Project(
     private fun inspectPackage(cap: ComplianceArtifactPackage) {
         var error = false
         val oriCap = this.complianceArtifactPackages.firstOrNull { it.id ==  cap.id } !!
-        // find differences in defaultLicensings
-        if (oriCap.defaultLicensings.size != cap.defaultLicensings.size) error = true
-        oriCap.defaultLicensings.forEach { oriDefaultLicense ->
-            val defaultLicense = cap.defaultLicensings.firstOrNull{ it.foundInFileScope == oriDefaultLicense.foundInFileScope}
-            if (defaultLicense == null) {
-                error = true }
-            else {
-                if (oriDefaultLicense.license != defaultLicense.license) error = true
-            }
-        }
 
-/*
+        // same version from different source repositories?
+        error = error || oriCap.repository != cap.repository
+        // find differences in defaultLicensings
+        error = error || oriCap.defaultLicensings.size != cap.defaultLicensings.size
         oriCap.defaultLicensings.forEach { oriDefaultLicense ->
-            if (!cap.defaultLicensings.any { oriDefaultLicense.license == it.license &&
-                    oriDefaultLicense.foundInFileScope == it.foundInFileScope })
-                error = true
-        }*/
+            error = error || cap.defaultLicensings.none {
+                it.foundInFileScope == oriDefaultLicense.foundInFileScope && it.license == oriDefaultLicense.license }
+        }
         // find differences in dirLicensings
         if (oriCap.dirLicensings.size != cap.dirLicensings.size) error = true
         oriCap.dirLicensings.forEach { oriDirLicensing ->
-            if (cap.dirLicensings.none { oriDirLicensing.dirScope == it.dirScope}) error = true
+            error = error || (cap.dirLicensings.none { oriDirLicensing.dirScope == it.dirScope})
             val dirLicensing = cap.dirLicensings.firstOrNull{ it.dirScope == oriDirLicensing.dirScope}
-            if (dirLicensing == null) {
-                error = true }
+            if (dirLicensing == null) { error = true }
             else {
-                if (oriDirLicensing.dirLicenses.size != dirLicensing.dirLicenses.size) error = true
+                error = error || (oriDirLicensing.dirLicenses.size != dirLicensing.dirLicenses.size)
                 oriDirLicensing.dirLicenses.forEach { oriDirLicense ->
-                    if (dirLicensing.dirLicenses.none {
-                        oriDirLicense.license == it.license &&
-                                oriDirLicense.foundInFileScope == it.foundInFileScope
-                    }) error = true
+                    error = error || (dirLicensing.dirLicenses.none {
+                        oriDirLicense.license == it.license && oriDirLicense.foundInFileScope == it.foundInFileScope })
                 }
             }
         }
         // find differences in reuseLicensings
-        if (oriCap.reuseLicensings.size != cap.reuseLicensings.size) error = true
+        error = error || oriCap.reuseLicensings.size != cap.reuseLicensings.size
         oriCap.reuseLicensings.forEach { oriReuseLicense ->
-            val reuseLicense = cap.reuseLicensings.firstOrNull{ it.foundInFileScope == oriReuseLicense.foundInFileScope}
-            if (reuseLicense == null) {
-                error = true }
-            else {
-                if (oriReuseLicense.license != reuseLicense.license) error = true
-            }
+            error = error || cap.reuseLicensings.none{ it.foundInFileScope == oriReuseLicense.foundInFileScope
+                    && it.license == oriReuseLicense.license}
         }
         // find differences in fileLicensings
-        if (oriCap.fileLicensings.size != cap.fileLicensings.size) error = true
+        error = error || (oriCap.fileLicensings.size != cap.fileLicensings.size)
         oriCap.fileLicensings.forEach { oriFileLicensing ->
-            if (cap.fileLicensings.none { oriFileLicensing.fileScope == it.fileScope}) error = true
+            error = error || (cap.fileLicensings.none { oriFileLicensing.fileScope == it.fileScope})
             val fileLicensing = cap.fileLicensings.firstOrNull{ it.fileScope == oriFileLicensing.fileScope}
-            if (fileLicensing == null) {
-                error = true }
+            if (fileLicensing == null) { error = true }
             else {
-                if (oriFileLicensing.fileLicenses.size != fileLicensing.fileLicenses.size) error = true
+                error = error || (oriFileLicensing.fileLicenses.size != fileLicensing.fileLicenses.size)
                 oriFileLicensing.fileLicenses.forEach { oriFileLicense ->
-                    if (fileLicensing.fileLicenses.none {
-                            oriFileLicense.license == it.license }) error = true
+                    error = error || (fileLicensing.fileLicenses.none { oriFileLicense.license == it.license })
                 }
-
-                if (oriFileLicensing.fileCopyrights.size != fileLicensing.fileCopyrights.size) error = true
+                error = error ||  (oriFileLicensing.fileCopyrights.size != fileLicensing.fileCopyrights.size)
                 oriFileLicensing.fileCopyrights.forEach { oriFileCopyright ->
-                    if (fileLicensing.fileCopyrights.none {
-                            oriFileCopyright.copyright == it.copyright }) error = true
+                    error = error || (fileLicensing.fileCopyrights.none { oriFileCopyright.copyright == it.copyright })
                 }
             }
         }
 
-
         if (error)
-            Logger.log("[${cap.id}] already exists in merged file but is different!")
+            Logger.log("[${oriCap.origin}: ${cap.id}]: difference(s) in file  ${cap.origin}!", Level.WARN)
     }
 
     private fun containsID(id: Identifier): Boolean = this.complianceArtifactPackages.any { it.id == id}
