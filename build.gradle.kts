@@ -3,24 +3,20 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val cliktVersion: String by project
 val jacksonVersion: String by project
 val log4jCoreVersion: String by project
+val osCakeMergerVersion: String by project
+val osCakeApplication: String by project
 
 plugins {
     kotlin("jvm") version "1.4.10"
     application
 }
 group = "de.oscake"
-version = "1.0-SNAPSHOT"
+version = "$osCakeMergerVersion"
 
 application {
-    applicationName = "OScake-Merger"
+    applicationName = "$osCakeApplication"
     mainClassName = "de.oscake.MergerMain"
 }
-
-/*val jar by tasks.getting(Jar::class) {
-    manifest {
-        attributes["Main-Class"] = "de.oscake.MergerMain"
-    }
-}*/
 
 tasks.named<CreateStartScripts>("startScripts") {
     doLast {

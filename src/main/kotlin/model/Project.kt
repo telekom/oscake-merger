@@ -22,7 +22,7 @@ internal data class Project(
     val complianceArtifactPackages: MutableList<ComplianceArtifactPackage>
 )
 {
-    constructor():this(false, null, mutableListOf<ComplianceArtifactPackage>())
+    constructor(cac: ComplianceArtifactCollection ):this(false, cac, mutableListOf<ComplianceArtifactPackage>())
 
     fun merge(project: Project) {
         val packagesToAdd = mutableListOf<ComplianceArtifactPackage>()
