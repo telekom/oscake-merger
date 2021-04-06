@@ -5,6 +5,7 @@ val jacksonVersion: String by project
 val log4jCoreVersion: String by project
 val osCakeMergerVersion: String by project
 val osCakeApplication: String by project
+val commonsCompressVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.4.10"
@@ -37,6 +38,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jCoreVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jCoreVersion")
+    implementation("org.apache.commons:commons-compress:$commonsCompressVersion")
 
 
 }

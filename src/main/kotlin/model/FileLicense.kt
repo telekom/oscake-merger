@@ -15,5 +15,5 @@ internal data class FileLicense(
     /**
      * Represents the path to the file containing the license text in the archive.
      */
-    val licenseTextInArchive: String? = null,
+    var licenseTextInArchive: String? = null,
 )

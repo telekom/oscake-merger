@@ -12,5 +12,5 @@ internal data class DefaultLicense(
     /**
      * Represents the path to the file containing the license text in the archive.
      */
-    val licenseTextInArchive: String?
+    var licenseTextInArchive: String?
 )

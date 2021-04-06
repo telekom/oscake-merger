@@ -16,7 +16,7 @@ internal data class FileLicensing(
     /**
      * Represents the path to the file containing the license text in the archive.
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL) val fileContentInArchive: String?,
+    @JsonInclude(JsonInclude.Include.NON_NULL) var fileContentInArchive: String?,
     /**
      * [fileLicenses] keeps a list of all license findings for this file.
      */

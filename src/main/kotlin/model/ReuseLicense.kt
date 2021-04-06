@@ -15,5 +15,5 @@ internal class ReuseLicense(
     /**
      * Path to the license file in the archive (target)
      */
-    val licenseTextInArchive: String? = null
+    var licenseTextInArchive: String? = null
 )

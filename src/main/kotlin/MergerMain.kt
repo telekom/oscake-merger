@@ -1,6 +1,5 @@
 package de.oscake
 
-import Logger
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
@@ -66,16 +65,16 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
         // merge all packages into new project
         val archiveFileRelativeName =  makeRelativePath(outputFile!!, archiveFile!!)
 
-        val mergedProject = Project(ComplianceArtifactCollection(cid, archiveFileRelativeName))
+        val mergedProject = Project.init(ComplianceArtifactCollection(cid, archiveFileRelativeName), archiveFile )
 
         projects.forEach {
             mergedProject.merge(it)
             mergedProject.hasIssues = mergedProject.hasIssues || it.hasIssues
         }
-
+        mergedProject.terminateArchiveHandling()
 
         val objectMapper = ObjectMapper()
-        outputFile!!.bufferedWriter().use {
+        outputFile.bufferedWriter().use {
             it.write(objectMapper.writeValueAsString(mergedProject))
         }
 
