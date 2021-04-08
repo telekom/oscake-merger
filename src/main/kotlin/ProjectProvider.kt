@@ -2,12 +2,15 @@ package de.oscake
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+
 import de.oscake.model.Project
-import org.apache.logging.log4j.Level
+
 import java.io.File
 import java.io.IOException
 
-internal class ProjectProvider private constructor(){
+import org.apache.logging.log4j.Level
+
+internal class ProjectProvider private constructor() {
     companion object {
         private val mapper = jacksonObjectMapper()
 
@@ -21,8 +24,7 @@ internal class ProjectProvider private constructor(){
                 }
             } catch (e: IOException) {
                 Logger.log(e.stackTraceToString(), Level.ERROR)
-            }
-            finally {
+            } finally {
                 return project
             }
         }

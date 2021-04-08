@@ -2,7 +2,7 @@ package de.oscake.model
 
 /**
  * The DirLicense class wraps the information about the [license] the name of the file containing the license
- * information [licenseTextInArchive] and the corresponding [path]
+ * information [licenseTextInArchive] and the corresponding [foundInFileScope]
  */
 internal data class DirLicense(
     /**

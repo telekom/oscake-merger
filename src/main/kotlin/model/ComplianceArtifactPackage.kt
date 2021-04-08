@@ -2,10 +2,10 @@ package de.oscake.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+
 import model.FileLicensing
 
-//@JsonInclude(JsonInclude.Include.NON_DEFAULT)
-internal data class ComplianceArtifactPackage (
+internal data class ComplianceArtifactPackage(
     /**
      * Package ID [pid]: e.g. "tdosca-tc06"  - part of the [id].
      */
@@ -25,7 +25,7 @@ internal data class ComplianceArtifactPackage (
     /**
      * If the package is REUSE compliant, this flag is set to true.
      */
-    @get: JsonInclude(JsonInclude.Include.NON_DEFAULT) public val reuseCompliant: Boolean,
+    @get: JsonInclude(JsonInclude.Include.NON_DEFAULT) val reuseCompliant: Boolean,
     /**
      * [hasIssues] shows that issues have happened during processing.
      */
@@ -47,8 +47,7 @@ internal data class ComplianceArtifactPackage (
      */
     val fileLicensings: MutableList<FileLicensing>
 
-)
-{
+) {
     /**
      * [origin] contains the name of the source file
      */

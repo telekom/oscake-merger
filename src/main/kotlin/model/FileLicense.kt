@@ -1,7 +1,5 @@
 package de.oscake.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-
 /**
  * The FileLicense class wraps the information about the [license] and the name of the file containing the license
  * information [licenseTextInArchive]. An instance with null values may exist if the file was archived by the scanner

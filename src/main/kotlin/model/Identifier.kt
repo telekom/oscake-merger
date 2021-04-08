@@ -46,5 +46,4 @@ internal data class Identifier(
 
     @JsonValue
     fun toCoordinates() = components.joinToString(":") { component -> component.trim().filterNot { it < ' ' } }
-
 }

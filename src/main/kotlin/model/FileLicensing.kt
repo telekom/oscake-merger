@@ -1,11 +1,12 @@
 package model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+
 import de.oscake.model.FileCopyright
 import de.oscake.model.FileLicense
 
 /**
- * The class FileLicensing is a collection of [FileLicense] instances for the given path (stored in [scope])
+ * The class FileLicensing is a collection of [FileLicense] instances for the given path (stored in [fileScope])
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 internal data class FileLicensing(
