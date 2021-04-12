@@ -6,6 +6,7 @@ val log4jCoreVersion: String by project
 val osCakeMergerVersion: String by project
 val osCakeApplication: String by project
 val commonsCompressVersion: String by project
+val osCakeMergerSpecification: String by project
 
 plugins {
     kotlin("jvm") version "1.4.10"
@@ -31,11 +32,22 @@ if (version == Project.DEFAULT_VERSION) {
     }
 }
 
-logger.quiet("Building OSCake-Merger version $version.")
+logger.quiet("Building OSCake-Merger: specification: $osCakeMergerSpecification - version $version.")
 
 application {
     applicationName = "$osCakeApplication"
-    mainClassName = "de.oscake.MergerMain"
+    mainClassName = "de.oscake.MergerMainKt"
+}
+
+tasks.withType<Jar>().configureEach {
+    manifest {
+        val versionCandidates = listOf(project.version, rootProject.version)
+        attributes["Implementation-Version"] = versionCandidates.find {
+            it != Project.DEFAULT_VERSION
+        } ?: "GRADLE-SNAPSHOT"
+
+        attributes["Specification-Version"] = "$osCakeMergerSpecification"
+    }
 }
 
 tasks.named<CreateStartScripts>("startScripts") {

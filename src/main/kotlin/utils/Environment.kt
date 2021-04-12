@@ -5,12 +5,15 @@ import java.lang.Runtime
 /**
  * A description of the environment that OSCake-Merger was executed in.
  */
-data class Environment(
+internal data class Environment(
     /**
      * The version of OSCake-Merger used.
      */
     val oscakeMergerVersion: String = OSCAKE_MERGER_VERSION,
-
+    /**
+     * The specification of OSCake-Merger used.
+     */
+    val oscakeMergerVersionSpecification: String = OSCAKE_MERGER_SPECIFICATION,
     /**
      * The version of Java used.
      */
@@ -30,4 +33,15 @@ data class Environment(
      * The maximum amount of memory available.
      */
     val maxMemory: Long = Runtime.getRuntime().maxMemory(),
-)
+){
+    companion object {
+        /**
+         * The version of the OSCake-Merger as a string.
+         */
+        val OSCAKE_MERGER_VERSION by lazy { this::class.java.`package`.implementationVersion ?: "IDE-SNAPSHOT" }
+        /**
+         * The specification of the OSCake-Merger as a string.
+         */
+        val OSCAKE_MERGER_SPECIFICATION by lazy { this::class.java.`package`.specificationVersion ?: "" }
+    }
+}

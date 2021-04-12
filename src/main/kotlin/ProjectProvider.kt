@@ -10,6 +10,9 @@ import java.io.IOException
 
 import org.apache.logging.log4j.Level
 
+/**
+ * [ProjectProvider] returns a [Project]-instance - deserialized from the provided source file
+ */
 internal class ProjectProvider private constructor() {
     companion object {
         private val mapper = jacksonObjectMapper()
@@ -19,6 +22,7 @@ internal class ProjectProvider private constructor() {
             try {
                 val json = File(source.absolutePath).readText()
                 project = mapper.readValue<Project>(json)
+                // store the originating file name inside of the project instance for collision detection
                 project.complianceArtifactPackages.forEach {
                     it.origin = source.name
                 }

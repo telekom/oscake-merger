@@ -49,7 +49,7 @@ internal data class ComplianceArtifactPackage(
 
 ) {
     /**
-     * [origin] contains the name of the source file
+     * [origin] contains the name of the source file and is set during deserialization
      */
     @JsonIgnore lateinit var origin: String
 }

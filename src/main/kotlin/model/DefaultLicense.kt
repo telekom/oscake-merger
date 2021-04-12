@@ -2,7 +2,7 @@ package de.oscake.model
 
 internal data class DefaultLicense(
     /**
-     * Shows the [foundInFileScope] to the file where the license was found.
+     * Shows the path:[foundInFileScope] to the file where the license was found.
      */
     val foundInFileScope: String?,
     /**

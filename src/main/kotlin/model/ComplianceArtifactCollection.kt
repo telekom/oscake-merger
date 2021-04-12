@@ -2,11 +2,11 @@ package de.oscake.model
 
 import de.oscake.utils.OSCAKE_MERGER_ARCHIVE_TYPE
 import de.oscake.utils.OSCAKE_MERGER_AUTHOR
-import de.oscake.utils.OSCAKE_MERGER_VERSION
+
 import java.time.LocalDateTime
 
 /**
- * The class [ComplianceArtifactCollection] contains meta information about the run of the OSCakeReporter. Currently,
+ * The class [ComplianceArtifactCollection] contains meta information about the merged oscc file. Currently,
  * only zip archives are supported.
  */
 internal data class ComplianceArtifactCollection(
@@ -19,7 +19,7 @@ internal data class ComplianceArtifactCollection(
      */
     val author: String,
     /**
-     * Represents the release number of the OSCakeReporter which was used when creating the file.
+     * Represents the specification/release number of the program.
      */
     val release: String,
     /**
@@ -35,6 +35,6 @@ internal data class ComplianceArtifactCollection(
      */
     val archiveType: String
 ) {
-    constructor(cid: String, archiveFileName: String) : this(cid, OSCAKE_MERGER_AUTHOR, OSCAKE_MERGER_VERSION,
-            LocalDateTime.now().toString(), archiveFileName, OSCAKE_MERGER_ARCHIVE_TYPE)
+    constructor(cid: String, archiveFileName: String, release: String) : this(cid, OSCAKE_MERGER_AUTHOR,
+        release, LocalDateTime.now().toString(), archiveFileName, OSCAKE_MERGER_ARCHIVE_TYPE)
 }

@@ -48,8 +48,10 @@ internal data class Project(
         private var archiveFile: File? = null
 
         // see https://docs.oracle.com/javase/9/docs/specs/security/standard-names.html#messagedigest-algorithms
+        // used to create unique hashes as prefixes for file references
         private val DIGEST by lazy { MessageDigest.getInstance("SHA-1") }
 
+        // initialize a new project - used as the target for the merged projects
         fun init(cac: ComplianceArtifactCollection, arcFile: File): Project {
             if (initProject != null) return initProject!!
 
@@ -82,6 +84,7 @@ internal data class Project(
         }
     }
 
+    // shows that this project is the target project
     private var isInitialProject = false
 
     @Suppress("ReturnCount")
@@ -97,14 +100,22 @@ internal data class Project(
         var absoluteFilePathToZip: File?
         val originDir = originFile.parentFile
 
+        if (project.hasIssues) {
+            Logger.log("<${originFile.name}> contains unresolved issues - not processed!", Level.ERROR)
+            hasIssues = true
+            return false
+        }
+
         if (project.complianceArtifactCollection == null) {
-            Logger.log("Incomplete <complianceArtifactCollection> in file: <${originFile.name}>", Level.WARN)
+            Logger.log("Incomplete <complianceArtifactCollection> in file: <${originFile.name}>", Level.ERROR)
+            hasIssues = true
             return false
         } else {
             absoluteFilePathToZip = originDir.resolve(project.complianceArtifactCollection!!.archivePath)
             if (!absoluteFilePathToZip.exists()) {
                 Logger.log("Archive file <$absoluteFilePathToZip> for project in <${originFile.name}> does " +
-                        "not exist!", Level.WARN)
+                        "not exist!", Level.ERROR)
+                hasIssues = true
                 return false
             }
         }
@@ -114,15 +125,20 @@ internal data class Project(
                 packagesToAdd.add(complianceArtifactPackage)
                 adjustFilePaths(complianceArtifactPackage, prefix, filesToArchive)
             } else {
-                inspectPackage(complianceArtifactPackage)
+                hasIssues = hasIssues || inspectPackage(complianceArtifactPackage)
             }
         }
-        if (filesToArchive.size > 0) copyFromArchiveToArchive(filesToArchive, prefix, absoluteFilePathToZip)
+        if (filesToArchive.size > 0) {
+            if (!copyFromArchiveToArchive(filesToArchive, prefix, absoluteFilePathToZip)) hasIssues = true
+        }
         if (packagesToAdd.size > 0) complianceArtifactPackages.addAll(packagesToAdd)
 
         return true
     }
 
+    /**
+     * Copies files from the source archive to the target archive by renaming each file (prepending the [prefix])
+     */
     @Suppress("NestedBlockDepth")
     private fun copyFromArchiveToArchive(
         filesToArchive: List<String>,
@@ -153,6 +169,9 @@ internal data class Project(
         }
     }
 
+    /**
+     * Adjusts all file paths in the file references - prepends the names with a prefix.
+     * */
     private fun adjustFilePaths(
         complianceArtifactPackage: ComplianceArtifactPackage,
         prefix: String,
@@ -192,13 +211,19 @@ internal data class Project(
         }
     }
 
+    /**
+     * Generates a unique hash for a project
+     */
     private fun getNewPrefix(project: Project): String {
         val key = project.complianceArtifactCollection!!.cid
         return DIGEST.digest(key.toByteArray()).joinToString("") { String.format("%02x", it) } + "-"
     }
 
+    /**
+     * Packages with the same ID may only be different concerning the file references.
+     */
     @Suppress("ComplexMethod")
-    private fun inspectPackage(cap: ComplianceArtifactPackage) {
+    private fun inspectPackage(cap: ComplianceArtifactPackage): Boolean {
         var error = false
         val oriCap = this.complianceArtifactPackages.firstOrNull { it.id == cap.id }!!
 
@@ -247,6 +272,7 @@ internal data class Project(
         }
 
         if (error) Logger.log("[${oriCap.origin}: ${cap.id}]: difference(s) in file ${cap.origin}!", Level.WARN)
+        return error
     }
 
     private fun containsID(id: Identifier): Boolean = this.complianceArtifactPackages.any { it.id == id }
