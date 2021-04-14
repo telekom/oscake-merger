@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2021 Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache 
+ * License, Version 2.0 (the "License"); you may not use this 
+ * file except in compliance with the License. 
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package de.oscake
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -80,6 +99,7 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
     /**
      * Executes the program, which merges oscc-files from the [inputDir] into the [outputDirArg]
      */
+    @Suppress("ComplexMethod")
     override fun run() {
         println(getVersionHeader(env.oscakeMergerVersion))
         Logger.log("OSCake-Merger started at: ${LocalDateTime.now()}")
@@ -116,7 +136,7 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
         // merge all packages into new project
         val env = Environment
         val release = if (env.OSCAKE_MERGER_SPECIFICATION != "") "${env.OSCAKE_MERGER_SPECIFICATION}_" +
-                "${env.OSCAKE_MERGER_VERSION}" else "${env.OSCAKE_MERGER_VERSION}"
+                env.OSCAKE_MERGER_VERSION else env.OSCAKE_MERGER_VERSION
         val mergedProject = Project.init(ComplianceArtifactCollection(cid, archiveFileRelativeName,
             release), archiveFile)
 
@@ -124,6 +144,8 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
             ProjectProvider.getProject(file.absoluteFile)?.let { project ->
                 if (mergedProject.merge(project, file)) {
                     inputFileCounter++
+                    val mergedFile = file.relativeToOrNull(inputDir) ?: ""
+                    Logger.log("File: <$mergedFile> successfully merged!")
                 }
             }
         }
@@ -141,14 +163,14 @@ class MergerMain : CliktCommand(printHelpOnEmptyArgs = true) {
     private fun getVersionHeader(version: String): String {
         val header = mutableListOf<String>()
         val spec = if (env.oscakeMergerVersionSpecification != "") "specification: " +
-                "${env.oscakeMergerVersionSpecification}" else ""
+                env.oscakeMergerVersionSpecification else ""
 
         """
             
              XXXXX    XXXXX    XXXXX   XXXX   X    X  XXXXXX
             X     X  X        X       X    X  X   X   X
             X     X   XXXX    X       X    X  XXXX    XXXXX    -----  MERGER: version: $version
-            X     X       X   X       XXXXXX  X   X   X                       ${spec}
+            X     X       X   X       XXXXXX  X   X   X                       $spec
              XXXXX   XXXXX     XXXXX  X    X  X    X  XXXXXX          Running on ${env.os} under Java ${env.javaVersion}
         """.trimIndent().lines().mapTo(header) { it.trimEnd() }
 
