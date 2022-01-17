@@ -16,6 +16,8 @@
   <a href="#licensing">Licensing</a>
 </p>
 
+**UPDATE**: Merger is now integrated into https://github.com/telekom/ort
+
 OSCake Merger is a tool allowing to combine valid OSCake Reporter (and OSCake validated) output files into a single package for distribution.
 
 ## Code of Conduct
